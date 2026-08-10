@@ -70,14 +70,17 @@ EXPOSE 8866
 # und akzeptieren sowohl 200 (fertig) als auch 404 (Notebook noch nicht gerendert)
 # – beides bedeutet, der Server läuft.
 HEALTHCHECK --interval=30s --timeout=15s --start-period=180s --retries=5 \
-    CMD curl -fsS -o /dev/null -w "%{http_code}" "http://localhost:${PORT:-8866}/voila/render/4Models.ipynb" | grep -qE "^(200|404)$" || exit 1
+    CMD curl -fsS -o /dev/null -w "%{http_code}" "http://localhost:${PORT:-8866}/render/4Models.ipynb" | grep -qE "^(200|404)$" || exit 1
 
 # Entrypoint: Notebook ausführen. Render setzt $PORT – wird respektiert.
 # Offizielles Pattern aus Voilà-Doku für Container-Deploys:
 #   --port=$PORT  --Voila.ip=0.0.0.0  --no-browser
 # strip_sources ist Default in Voilà 0.5, muss nicht gesetzt werden.
+# base_url sorgt dafür, dass die Static-Files-Route korrekt auf das Working
+# Directory zeigt (/app), sonst sucht Voilà unter /app/voila/render/.
 CMD ["sh", "-c", "exec voila 4Models.ipynb \
         --port=${PORT:-8866} \
         --Voila.ip=0.0.0.0 \
+        --Voila.base_url=/ \
         --no-browser \
         --Voila.log_level=INFO"]
