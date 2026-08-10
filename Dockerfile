@@ -65,15 +65,17 @@ ENV VOILA_PORT=8866
 ENV VOILA_HOST=0.0.0.0
 EXPOSE 8866
 
-# Health-Check (Render schaut auf den Port, nicht auf /health – aber schadet nicht)
-HEALTHCHECK --interval=30s --timeout=5s --start-period=60s --retries=3 \
-    CMD curl -fsS "http://localhost:${PORT:-8866}/voila/render/4Models.ipynb" || exit 1
+# Health-Check (Render schaut auf den Port). Wir testen auf den Render-Endpunkt
+# mit HEAD (curl -I). Voilà antwortet dort mit 200, sonst mit 404/405.
+HEALTHCHECK --interval=30s --timeout=5s --start-period=90s --retries=3 \
+    CMD curl -fsI "http://localhost:${PORT:-8866}/voila/render/4Models.ipynb" || exit 1
 
 # Entrypoint: Notebook ausführen. Render setzt $PORT – wird respektiert.
 # Wichtig: bei Render ist $PORT typisch 10000. Wir binden explizit darauf.
+# Voilà 0.5 hat einige CLI-Flags umbenannt: --host gibt es nicht mehr,
+# --Voila.ip ist ebenfalls deprecated. Default ist 0.0.0.0.
 CMD ["sh", "-c", "exec voila 4Models.ipynb \
         --port=${PORT:-8866} \
-        --host=0.0.0.0 \
+        --Voila.ip=0.0.0.0 \
         --no-browser \
-        --strip_sources=True \
         --Voila.log_level=INFO"]

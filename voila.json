@@ -2,9 +2,6 @@
   "Voila": {
     "strip_sources": true,
     "show_code": false,
-    "theme": "light",
-    "template": "lab",
-    "enable_nbextensions": true,
     "port": 8866,
     "ip": "0.0.0.0"
   }
