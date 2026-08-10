@@ -67,13 +67,14 @@ EXPOSE 8866
 
 # Health-Check (Render schaut auf den Port, nicht auf /health – aber schadet nicht)
 HEALTHCHECK --interval=30s --timeout=5s --start-period=60s --retries=3 \
-    CMD curl -fsS "http://localhost:${VOILA_PORT}/voila" || exit 1
+    CMD curl -fsS "http://localhost:${PORT:-8866}/voila/render/4Models.ipynb" || exit 1
 
 # Entrypoint: Notebook ausführen. Render setzt $PORT – wird respektiert.
 CMD ["sh", "-c", "voila 4Models.ipynb \
         --port=${PORT:-8866} \
         --host=0.0.0.0 \
         --Voila.ip=${VOILA_HOST} \
+        --Voila.base_url=/voila/ \
         --Voila.log_level=INFO \
         --no-browser \
         --strip_sources=True"]
