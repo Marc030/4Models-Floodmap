@@ -28,7 +28,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 # GDAL_VERSION muss zum installierten gdal-bin passen -> dann holt pip
 # die passenden rasterio/fiona Wheels von PyPI (manylinux).
-ENV GDAL_VERSION=$(gdal-config --version)
+# python:3.12-slim (Debian bookworm) liefert GDAL 3.10.x.
+ENV GDAL_VERSION=3.10.0
 
 WORKDIR /app
 
