@@ -25,5 +25,5 @@ services:
         value: "yes"
       - key: VOILA_LOG_LEVEL
         value: "INFO"
-    healthCheckPath: /voila/tree
+    healthCheckPath: /voila/render/4Models.ipynb
     autoDeploy: true

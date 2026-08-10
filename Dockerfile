@@ -66,14 +66,15 @@ ENV VOILA_HOST=0.0.0.0
 EXPOSE 8866
 
 # Health-Check (Render schaut auf den Port). Wir testen mit GET auf den
-# Voilà-Tree-Endpoint, der garantiert 200 liefert, solange der Server läuft.
+# Voilà-Render-Endpunkt mit curl -f (kein -I, weil HEAD 405 wirft). Mit
+# file_allowlist=.* in voila.json antwortet der Endpunkt mit 200.
 HEALTHCHECK --interval=30s --timeout=10s --start-period=120s --retries=3 \
-    CMD curl -fsS "http://localhost:${PORT:-8866}/voila/tree" || exit 1
+    CMD curl -fsS "http://localhost:${PORT:-8866}/voila/render/4Models.ipynb" -o /dev/null || exit 1
 
 # Entrypoint: Notebook ausführen. Render setzt $PORT – wird respektiert.
-# Wichtig: bei Render ist $PORT typisch 10000. Wir binden explizit darauf.
-# Voilà 0.5 hat einige CLI-Flags umbenannt: --host gibt es nicht mehr,
-# --Voila.ip ist ebenfalls deprecated. Default ist 0.0.0.0.
+# Offizielles Pattern aus Voilà-Doku für Container-Deploys:
+#   --port=$PORT  --Voila.ip=0.0.0.0  --no-browser
+# strip_sources ist Default in Voilà 0.5, muss nicht gesetzt werden.
 CMD ["sh", "-c", "exec voila 4Models.ipynb \
         --port=${PORT:-8866} \
         --Voila.ip=0.0.0.0 \
