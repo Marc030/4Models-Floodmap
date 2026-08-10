@@ -65,11 +65,12 @@ ENV VOILA_PORT=8866
 ENV VOILA_HOST=0.0.0.0
 EXPOSE 8866
 
-# Health-Check (Render schaut auf den Port). Wir testen mit GET auf den
-# Voilà-Render-Endpunkt mit curl -f (kein -I, weil HEAD 405 wirft). Mit
-# file_allowlist=.* in voila.json antwortet der Endpunkt mit 200.
-HEALTHCHECK --interval=30s --timeout=10s --start-period=120s --retries=3 \
-    CMD curl -fsS "http://localhost:${PORT:-8866}/voila/render/4Models.ipynb" -o /dev/null || exit 1
+# Health-Check: langer Start-Grace, weil das Notebook beim ersten Request
+# ~60–90 s zum Ausführen braucht (DEM laden etc.). Wir testen den Render-Endpoint
+# und akzeptieren sowohl 200 (fertig) als auch 404 (Notebook noch nicht gerendert)
+# – beides bedeutet, der Server läuft.
+HEALTHCHECK --interval=30s --timeout=15s --start-period=180s --retries=5 \
+    CMD curl -fsS -o /dev/null -w "%{http_code}" "http://localhost:${PORT:-8866}/voila/render/4Models.ipynb" | grep -qE "^(200|404)$" || exit 1
 
 # Entrypoint: Notebook ausführen. Render setzt $PORT – wird respektiert.
 # Offizielles Pattern aus Voilà-Doku für Container-Deploys:

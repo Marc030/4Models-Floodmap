@@ -2,6 +2,7 @@
   "VoilaConfiguration": {
     "theme": "light",
     "strip_sources": true,
-    "file_allowlist": [".*"]
+    "file_allowlist": [".*"],
+    "file_denylist": []
   }
 }
