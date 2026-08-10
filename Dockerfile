@@ -70,11 +70,10 @@ HEALTHCHECK --interval=30s --timeout=5s --start-period=60s --retries=3 \
     CMD curl -fsS "http://localhost:${PORT:-8866}/voila/render/4Models.ipynb" || exit 1
 
 # Entrypoint: Notebook ausführen. Render setzt $PORT – wird respektiert.
-CMD ["sh", "-c", "voila 4Models.ipynb \
+# Wichtig: bei Render ist $PORT typisch 10000. Wir binden explizit darauf.
+CMD ["sh", "-c", "exec voila 4Models.ipynb \
         --port=${PORT:-8866} \
         --host=0.0.0.0 \
-        --Voila.ip=${VOILA_HOST} \
-        --Voila.base_url=/voila/ \
-        --Voila.log_level=INFO \
         --no-browser \
-        --strip_sources=True"]
+        --strip_sources=True \
+        --Voila.log_level=INFO"]
