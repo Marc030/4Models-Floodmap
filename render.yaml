@@ -1,0 +1,29 @@
+# ============================================================================
+# Render.com Blueprint – Flood Models Hamburg (Voilà)
+# Free-Tier: Web Service mit 512 MB RAM, schlafen nach 15 min Inaktivität.
+# ============================================================================
+services:
+  - type: web
+    name: flood-models-hamburg
+    runtime: docker
+    plan: free
+    region: oregon            # oder frankfurt – nah am Nutzer wählen
+    branch: main
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    # Render setzt automatisch $PORT; Voila wird mit --port=${PORT} gestartet.
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.12"
+      - key: OPENTOPOGRAPHY_API_KEY
+        sync: false           # manuell im Render-Dashboard setzen
+      - key: FLOOD_REMOTE_BASE_URL
+        value: ""             # z.B. https://dein-space.de/flood-models
+      - key: FLOOD_REMOTE_TIMEOUT
+        value: "30"
+      - key: JUPYTER_ENABLE_LAB
+        value: "yes"
+      - key: VOILA_LOG_LEVEL
+        value: "INFO"
+    healthCheckPath: /voila
+    autoDeploy: true

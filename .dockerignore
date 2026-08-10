@@ -1,0 +1,35 @@
+# Build-Kontext klein halten – alles, was NICHT ins Image muss.
+
+# Lokale Caches & Artefakte (werden im Container on-demand erzeugt)
+dem-src/
+flood-masks/
+.ipynb_checkpoints/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+# uv / hatch
+.venv/
+venv/
+env/
+build/
+dist/
+*.egg-info/
+
+# Tooling
+.git/
+.gitignore
+.gitattributes
+.DS_Store
+.vscode/
+.idea/
+
+# Tests / Docs / Render-Config (im Dockerfile nicht referenziert)
+tests/
+docs/
+*.log
+
+# Notebook-Backup (Original unverändert lassen)
+4Models-2026-08-08.ipynb

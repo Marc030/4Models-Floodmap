@@ -1,0 +1,34 @@
+# Pinned für Render.com Deploy.
+# Python 3.12 (siehe Dockerfile).
+# Aktuell gehalten – wenn du uv.lock nutzt, kannst du diese Datei
+# per `uv export -o requirements.txt` daraus regenerieren.
+
+# Geospatial core (native deps)
+rasterio>=1.3.10,<2.0
+fiona>=1.9,<2.0
+geopandas>=1.0
+shapely>=2.0
+pyproj>=3.6
+gdal>=3.7
+
+# Numerical
+numpy>=1.26,<3.0
+scipy>=1.11
+requests>=2.32
+
+# Hydrology / xarray
+rioxarray>=0.15
+pysheds>=0.4
+
+# Mapping / UI / Dashboard
+leafmap[raster]>=0.30
+ipywidgets>=8.1
+voila>=0.5.10
+jupyterlab>=4.2
+ipykernel>=6.29
+
+# Upload-Helfer (scripts/upload_artifacts.py)
+# Diese Pakete werden nur lokal beim Hochladen benötigt,
+# nicht im Docker-Image (Entrypoint ist voila).
+paramiko>=3.4        # SFTP
+python-dotenv>=1.0   # .env einlesen
