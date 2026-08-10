@@ -65,10 +65,10 @@ ENV VOILA_PORT=8866
 ENV VOILA_HOST=0.0.0.0
 EXPOSE 8866
 
-# Health-Check (Render schaut auf den Port). Wir testen auf den Render-Endpunkt
-# mit HEAD (curl -I). Voilà antwortet dort mit 200, sonst mit 404/405.
-HEALTHCHECK --interval=30s --timeout=5s --start-period=90s --retries=3 \
-    CMD curl -fsI "http://localhost:${PORT:-8866}/voila/render/4Models.ipynb" || exit 1
+# Health-Check (Render schaut auf den Port). Wir testen mit GET auf den
+# Voilà-Tree-Endpoint, der garantiert 200 liefert, solange der Server läuft.
+HEALTHCHECK --interval=30s --timeout=10s --start-period=120s --retries=3 \
+    CMD curl -fsS "http://localhost:${PORT:-8866}/voila/tree" || exit 1
 
 # Entrypoint: Notebook ausführen. Render setzt $PORT – wird respektiert.
 # Wichtig: bei Render ist $PORT typisch 10000. Wir binden explizit darauf.

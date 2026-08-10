@@ -1,8 +1,8 @@
 {
-  "Voila": {
-    "strip_sources": true,
-    "show_code": false,
+  "VoilaConfiguration": {
     "port": 8866,
-    "ip": "0.0.0.0"
+    "ip": "0.0.0.0",
+    "strip_sources": true,
+    "show_code": false
   }
 }
