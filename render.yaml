@@ -21,9 +21,11 @@ services:
         value: ""             # z.B. https://dein-space.de/flood-models
       - key: FLOOD_REMOTE_TIMEOUT
         value: "30"
-      - key: JUPYTER_ENABLE_LAB
-        value: "yes"
       - key: VOILA_LOG_LEVEL
         value: "INFO"
-    healthCheckPath: /voila/render/4Models.ipynb
+    # Voilà's Landingpage – antwortet sofort mit 200, rendert das Notebook
+    # nicht. Der Render-Endpoint /voila/render/4Models.ipynb würde beim
+    # ersten Cold-Start 60–90 s brauchen (DEM laden) und Renders 5 s-Probe
+    # timeouten, was zu Crash-Loops führt.
+    healthCheckPath: /voila
     autoDeploy: true

@@ -47,11 +47,9 @@ jupyter lab
 
 ## OpenTopography API-Key
 
-Das Notebook liest den Key in dieser Reihenfolge:
-
-1. Umgebungsvariable `OPENTOPOGRAPHY_API_KEY`
-2. Fallback-Key im Notebook-Quelltext (`_OPENTOPO_FALLBACK`)
-3. Interaktive Passwort-Abfrage
+Das Notebook liest den Key **ausschließlich** aus der Umgebungsvariablen
+`OPENTOPOGRAPHY_API_KEY`. Es gibt **keinen** im Quelltext hinterlegten
+Fallback-Key mehr — der Key gehört nicht ins Repo.
 
 Damit der Key dauerhaft gesetzt ist (Mac, zsh):
 
@@ -63,6 +61,12 @@ source ~/.zshenv
 
 `~/.zshenv` (nicht `.zshrc`) wird auch von GUI-gestarteten Apps wie
 JupyterLab aus dem Dock/Finder geladen.
+
+Auf **Render.com** wird der Key im Dashboard unter
+*Environment → Environment Variables* gesetzt (`sync: false` in
+`render.yaml` — wird also nicht aus dem Repo synchronisiert). Ohne
+gesetzten Key bricht das Notebook beim Start mit einer klaren
+Fehlermeldung ab, statt stillschweigend fehlzuschlagen.
 
 ## Projektstruktur
 

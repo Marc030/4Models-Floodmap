@@ -65,12 +65,17 @@ ENV VOILA_PORT=8866
 ENV VOILA_HOST=0.0.0.0
 EXPOSE 8866
 
-# Health-Check: langer Start-Grace, weil das Notebook beim ersten Request
-# ~60–90 s zum Ausführen braucht (DEM laden etc.). Wir testen den Render-Endpoint
-# und akzeptieren sowohl 200 (fertig) als auch 404 (Notebook noch nicht gerendert)
-# – beides bedeutet, der Server läuft.
-HEALTHCHECK --interval=30s --timeout=15s --start-period=180s --retries=5 \
-    CMD curl -fsS -o /dev/null -w "%{http_code}" "http://localhost:${PORT:-8866}/voila/render/4Models.ipynb" | grep -qE "^(200|404)$" || exit 1
+# Health-Check: testet NUR "Voilà lauscht und antwortet", nicht "Notebook
+# ist fertig gerendert". Der Render-Endpoint (/voila/render/4Models.ipynb)
+# braucht beim Cold-Start 60–90 s (DEM laden) und würde den Check immer
+# rot machen. Stattdessen fragen wir Voilà's Landingpage ab – die ist
+# immer sofort 200, sobald der Server läuft.
+#   -sS         : silent, aber zeige Fehler
+#   -o /dev/null: Response-Body verwerfen
+#   -w "%{http_code}": nur den Statuscode ausgeben
+#   - grep 200  : Exit 0 nur bei 200; alles andere (4xx/5xx/Timeout) → 1
+HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=5 \
+    CMD curl -sS -o /dev/null -w "%{http_code}" "http://localhost:${PORT:-8866}/voila" | grep -q "^200$" || exit 1
 
 # Entrypoint: Notebook ausführen. Render setzt $PORT – wird respektiert.
 # Offizielles Pattern aus Voilà-Doku für Container-Deploys:

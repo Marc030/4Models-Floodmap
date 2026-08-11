@@ -38,3 +38,6 @@ render-build.log
 # Notebook-Backup
 4Models-2026-08-08.ipynb
 manifest.json
+
+# Anaconda / Anaconda Navigator lokale Projekt-Datenbank
+anaconda_projects/
