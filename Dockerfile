@@ -81,10 +81,17 @@ HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=5 \
 # Offizielles Pattern aus Voilà-Doku für Container-Deploys:
 #   --port=$PORT  --Voila.ip=0.0.0.0  --no-browser
 # strip_sources ist Default in Voilà 0.5, muss nicht gesetzt werden.
-# Ohne --Voila.base_url mounted Voilà das Notebook unter /voila/render/<name>,
-# und der Static-Files-Handler findet das .ipynb direkt im Working Directory.
+#
+# --Voila.base_url=/ ist KRITISCH: Ohne diesen Flag mounted Voilà
+# die Render-Routen unter /voila/files/voila/render/<name> statt
+# unter /voila/render/<name> (interne Doppel-Mount-Bug in 0.5.x
+# mit der TornadoServer-Default-Routing). Beobachtet im echten
+# Render-Deploy: /voila/render/4Models.ipynb → 302 → /voila/files/
+# voila/render/4Models.ipynb → 404. Mit base_url=/ antworten beide
+# Pfade korrekt.
 CMD ["sh", "-c", "exec voila 4Models.ipynb \
         --port=${PORT:-8866} \
         --Voila.ip=0.0.0.0 \
+        --Voila.base_url=/ \
         --no-browser \
         --Voila.log_level=INFO"]
